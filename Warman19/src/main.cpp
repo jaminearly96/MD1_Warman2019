@@ -1,9 +1,14 @@
 #include <Arduino.h>
+#include <motorController.h>
 
-void setup() {
-  // put your setup code here, to run once:
+motorController speedyboi;
+
+void setup()
+{
+  speedyboi.move(1);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop()
+{
+  // dab
 }
