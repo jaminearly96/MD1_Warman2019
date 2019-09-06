@@ -1,8 +1,6 @@
 #include "motorController.h"
 #include <L298N.h>
 
-int speed = 0.5;
-
 /*********************************************** 
  * Fuck man, I'm glad we have heaps of pins lol
  * Motors are numbered as follows:
@@ -26,18 +24,19 @@ int speed = 0.5;
 #define Motor4Pin2 0
 #define Motor4PinPWM 0
 
+// Motor Declaration
 L298N motor1(Motor1PinPWM, Motor1Pin1, Motor1Pin2);
 L298N motor2(Motor2PinPWM, Motor2Pin1, Motor2Pin2);
 L298N motor3(Motor3PinPWM, Motor3Pin1, Motor3Pin2);
 L298N motor4(Motor4PinPWM, Motor4Pin1, Motor4Pin2);
 
 // Sets the speed of the motors
-void changeSpeed(float speed)
+void motorController::setSpeed(float speed)
 {
     motor1.setSpeed(speed * 255);
-    motor1.setSpeed(speed * 255);
-    motor1.setSpeed(speed * 255);
-    motor1.setSpeed(speed * 255);
+    motor2.setSpeed(speed * 255);
+    motor3.setSpeed(speed * 255);
+    motor4.setSpeed(speed * 255);
 }
 
 /**********************************************

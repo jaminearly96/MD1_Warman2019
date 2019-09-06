@@ -7,6 +7,7 @@
 class motorController
 {
 public:
+    void setSpeed(float speed);
     void move(int direction);
     void stop();
     void rotate(int direction);
