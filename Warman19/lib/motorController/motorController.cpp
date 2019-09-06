@@ -4,10 +4,10 @@
 /*********************************************** 
  * Fuck man, I'm glad we have heaps of pins lol
  * Motors are numbered as follows:
- * Motor1 - Front Left
- * Motor2- Frone Right
- * Motor3 - Back Right
- * Motor4 - Back Left
+ * Motor1 - Front 
+ * Motor2-  Right
+ * Motor3 - Back
+ * Motor4 - Left
  * 
  * If you get confused, its numbered clockwise starting at the front left.
  ***********************************************/
@@ -51,28 +51,28 @@ void motorController::move(int direction)
     switch (direction)
     {
     case 1:
-        motor1.forward();
-        motor2.backward();
+        motor1.stop();
+        motor2.forward();
         motor3.backward();
-        motor4.forward();
+        motor4.stop();
         break;
     case 2:
-        motor1.backward();
-        motor2.forward();
-        motor3.forward();
-        motor4.backward();
-        break;
-    case 3:
-        motor1.backward();
+        motor1.stop();
         motor2.backward();
         motor3.forward();
-        motor4.forward();
+        motor4.stop();
+        break;
+    case 3:
+        motor1.forward();
+        motor2.stop();
+        motor3.backward();
+        motor4.stop();
         break;
     case 4:
-        motor1.forward();
-        motor2.forward();
-        motor3.backward();
-        motor4.backward();
+        motor1.backward();
+        motor2.stop();
+        motor3.forward();
+        motor4.stop();
         break;
     }
 }
