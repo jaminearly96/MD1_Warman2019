@@ -14,22 +14,12 @@
 #define Motor4Pin2 1
 #define Motor4PinPWM 3
 
-float speed = 0.5;
-
 // Motor Declaration
 L298N motor1(Motor1PinPWM, Motor1Pin1, Motor1Pin2);
 L298N motor2(Motor2PinPWM, Motor2Pin1, Motor2Pin2);
 L298N motor3(Motor3PinPWM, Motor3Pin1, Motor3Pin2);
 L298N motor4(Motor4PinPWM, Motor4Pin1, Motor4Pin2);
 
-// Sets the speed of the motors
-void setSpeed(float speed)
-{
-  motor1.setSpeed(speed * 255);
-  motor2.setSpeed(speed * 255);
-  motor3.setSpeed(speed * 255);
-  motor4.setSpeed(speed * 255);
-}
 
 /**********************************************
  * Directions are as follows
@@ -38,7 +28,7 @@ void setSpeed(float speed)
  *      3 > Left
  *      4 > Right
  * *********************************************/
-void move(int direction)
+void move(int direction, int delayPeriod)
 {
   switch (direction)
   {
@@ -67,6 +57,24 @@ void move(int direction)
     motor4.stop();
     break;
   }
+  setSpeed(0.1);
+  delay(50);
+  setSpeed(0.15);
+  delay(50);
+  setSpeed(0.2);
+  delay(50);
+  setSpeed(0.25);
+  delay(50);
+  setSpeed(0.30);
+  delay(50);
+  setSpeed(0.35);
+  delay(50);
+  setSpeed(0.40);
+  delay(50);
+  setSpeed(0.45);
+  delay(50);
+  setSpeed(0.5);
+  delay(delayPeriod - 400);
 }
 
 // Stops all motors. duh
@@ -101,6 +109,7 @@ void rotate(int direction)
   }
 }
 
+
 // Pickup Balls
 void pickup(){
 
@@ -115,29 +124,24 @@ void setup()
 {
   // Start serial monitor
   Serial.begin(9600);
-  setSpeed(speed);
   delay(5000);
 }
 
 void loop()
 {
-  move(4);
-  delay(1500);
+  move(4, 1500);
   stop();
   pickup();
   delay(500);
-  move(1);
-  delay(1000);
+  move(1, 1000);
   stop();
   pickup();
   delay(800);
-  move(1);
-  delay(1000);
+  move(1, 1000);
   stop();
   pickup();
   delay(1000);
-  move(3);
-  delay(3000);
+  move(3, 3000);
   stop();
   dropoff();
   delay(100000);
