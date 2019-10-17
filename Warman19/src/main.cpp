@@ -1,5 +1,8 @@
 #include <Arduino.h>
 #include <L298N.h>
+#include <Stepper.h>
+
+int speed = 0.5;
 
 #define Motor1Pin1 11
 #define Motor1Pin2 12
@@ -13,6 +16,17 @@
 #define Motor4Pin1 2
 #define Motor4Pin2 1
 #define Motor4PinPWM 3
+
+#define StepperPin1 18
+#define StepperPin2 17
+#define StepperPin3 16
+#define StepperPin4 15
+
+const int stepsPerRevolution = 100;
+int stepperSpeed = 400;
+
+// Stepper Declaration
+Stepper stepper = Stepper(stepsPerRevolution, StepperPin4, StepperPin3, StepperPin2, StepperPin1);
 
 // Motor Declaration
 L298N motor1(Motor1PinPWM, Motor1Pin1, Motor1Pin2);
@@ -65,24 +79,12 @@ void move(int direction, int delayPeriod)
     motor4.stop();
     break;
   }
-  setSpeed(0.1);
-  delay(50);
-  setSpeed(0.15);
-  delay(50);
-  setSpeed(0.2);
-  delay(50);
-  setSpeed(0.25);
-  delay(50);
-  setSpeed(0.30);
-  delay(50);
-  setSpeed(0.35);
-  delay(50);
-  setSpeed(0.40);
-  delay(50);
-  setSpeed(0.45);
-  delay(50);
-  setSpeed(0.5);
-  delay(delayPeriod - 400);
+  for (float i = 0; i >= speed; i += 0.001)
+  {
+    setSpeed(i);
+    delay(10);
+  }
+  delay(delayPeriod - 500);
 }
 
 // Stops all motors. duh
@@ -99,7 +101,7 @@ void stop()
  *      1 > Clockwise
  *      2 > Anticlockwise
  * *********************************************/
-void rotate(int direction)
+void rotate(int direction, int delayPeriod)
 {
   switch (direction)
   {
@@ -117,15 +119,14 @@ void rotate(int direction)
   }
 }
 
-
 // Pickup Balls
-void pickup(){
-
+void pickup()
+{
 }
 
 // Dropoff Balls
-void dropoff(){
-
+void dropoff()
+{
 }
 
 void setup()
@@ -133,24 +134,30 @@ void setup()
   // Start serial monitor
   Serial.begin(9600);
   delay(5000);
+  stepper.setSpeed(stepperSpeed);
 }
 
 void loop()
 {
-  move(4, 1500);
-  stop();
-  pickup();
-  delay(500);
-  move(1, 1000);
-  stop();
-  pickup();
-  delay(800);
-  move(1, 1000);
-  stop();
-  pickup();
-  delay(1000);
-  move(3, 3000);
-  stop();
-  dropoff();
-  delay(100000);
+  stepper.step(200);
+  delay(2000);
+  // Step on revolution in the other direction:
+  stepper.step(-200);
+  delay(2000);
+  // move(4, 1500);
+  // stop();
+  // pickup();
+  // delay(500);
+  // move(1, 1000);
+  // stop();
+  // pickup();
+  // delay(800);
+  // move(1, 1000);
+  // stop();
+  // pickup();
+  // delay(1000);
+  // move(3, 3000);
+  // stop();
+  // dropoff();
+  // delay(100000);
 }
