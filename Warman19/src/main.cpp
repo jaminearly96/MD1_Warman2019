@@ -2,8 +2,16 @@
 #include <L298N.h>
 #include <Stepper.h>
 
-int speed = 0.5;
+/**********************************************************
+ * Tweak these to modify timing for each movement 
+ **********************************************************/
+#define Roll1 1500
+#define Roll2 1000
+#define Roll3 1000
+#define Roll4 3000
+/********************************************************/
 
+// Pin assignments for motor pins
 #define Motor1Pin1 11
 #define Motor1Pin2 12
 #define Motor1PinPWM 10
@@ -17,13 +25,15 @@ int speed = 0.5;
 #define Motor4Pin2 1
 #define Motor4PinPWM 3
 
+// Pin assignment for stepper pins
 #define StepperPin1 18
 #define StepperPin2 17
 #define StepperPin3 16
 #define StepperPin4 15
 
-const int stepsPerRevolution = 100;
-int stepperSpeed = 400;
+int speed = 0.5; // Assign value between 0 and 1 to modify the wheel speed
+const int stepsPerRevolution = 200; // How many steps are in a full revolution of the stepper
+int stepperSpeed = 400; // The speed of the stepper motor in steps/second
 
 // Stepper Declaration
 Stepper stepper = Stepper(stepsPerRevolution, StepperPin4, StepperPin3, StepperPin2, StepperPin1);
@@ -129,6 +139,15 @@ void dropoff()
 {
 }
 
+void testStepper()
+{
+  stepper.step(200);
+  delay(2000);
+  // Step on revolution in the other direction:
+  stepper.step(-200);
+  delay(2000);
+}
+
 void setup()
 {
   // Start serial monitor
@@ -139,24 +158,20 @@ void setup()
 
 void loop()
 {
-  stepper.step(200);
-  delay(2000);
-  // Step on revolution in the other direction:
-  stepper.step(-200);
-  delay(2000);
-  // move(4, 1500);
+  testStepper();
+  // move(4, Roll1);
   // stop();
   // pickup();
   // delay(500);
-  // move(1, 1000);
+  // move(1, Roll2);
   // stop();
   // pickup();
   // delay(800);
-  // move(1, 1000);
+  // move(1, Roll3);
   // stop();
   // pickup();
   // delay(1000);
-  // move(3, 3000);
+  // move(3, Roll4);
   // stop();
   // dropoff();
   // delay(100000);
