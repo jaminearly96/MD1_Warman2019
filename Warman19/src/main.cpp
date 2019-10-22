@@ -1,14 +1,22 @@
 #include <Arduino.h>
 #include <L298N.h>
 #include <Stepper.h>
+#include <PWMServo.h>
 
 /**********************************************************
  * Tweak these to modify timing for each movement 
  **********************************************************/
-#define Roll1 1500
+#define Roll1 2500
 #define Roll2 1000
 #define Roll3 1000
-#define Roll4 3000
+#define Roll4 2500
+#define Roll5 2500
+#define Lower1 2700
+#define Lift1 1200
+#define Lower2 1200
+#define Lift2 1200
+#define Lower3 1200
+#define Lift3 2700
 /********************************************************/
 
 // Pin assignments for motor pins
@@ -25,18 +33,15 @@
 #define Motor4Pin2 1
 #define Motor4PinPWM 3
 
-// Pin assignment for stepper pins
-#define StepperPin1 18
-#define StepperPin2 17
-#define StepperPin3 16
-#define StepperPin4 15
+#define ServoPin 14
 
 int speed = 0.5; // Assign value between 0 and 1 to modify the wheel speed
 const int stepsPerRevolution = 200; // How many steps are in a full revolution of the stepper
-int stepperSpeed = 400; // The speed of the stepper motor in steps/second
+int stepperSpeed = 80; // The speed of the stepper motor in steps/second
 
 // Stepper Declaration
-Stepper stepper = Stepper(stepsPerRevolution, StepperPin4, StepperPin3, StepperPin2, StepperPin1);
+Stepper stepper = Stepper(stepsPerRevolution, 18, 17, 16, 15);
+PWMServo servo;
 
 // Motor Declaration
 L298N motor1(Motor1PinPWM, Motor1Pin1, Motor1Pin2);
@@ -89,12 +94,13 @@ void move(int direction, int delayPeriod)
     motor4.stop();
     break;
   }
-  for (float i = 0; i >= speed; i += 0.001)
-  {
-    setSpeed(i);
-    delay(10);
-  }
-  delay(delayPeriod - 500);
+  delay(delayPeriod);
+  // for (float i = 0; i >= speed; i += 0.001)
+  // {
+  //   setSpeed(i);
+  //   delay(10);
+  // }
+  // delay(delayPeriod - 500);
 }
 
 // Stops all motors. duh
@@ -129,14 +135,12 @@ void rotate(int direction, int delayPeriod)
   }
 }
 
-// Pickup Balls
-void pickup()
-{
+void lift(int steps){
+  stepper.step(-1 * steps);
 }
 
-// Dropoff Balls
-void dropoff()
-{
+void lower(int steps){
+  stepper.step(steps);
 }
 
 void testStepper()
@@ -148,31 +152,44 @@ void testStepper()
   delay(2000);
 }
 
+void turnServo(int i){
+  int val = i;
+  // val = map(val, 0, 1023, 0, 180);
+  servo.write(val);
+  delay(2000);
+}
+
 void setup()
 {
   // Start serial monitor
   Serial.begin(9600);
+    turnServo(0);
   delay(5000);
   stepper.setSpeed(stepperSpeed);
+  servo.attach(ServoPin);
 }
 
 void loop()
 {
-  testStepper();
-  // move(4, Roll1);
-  // stop();
-  // pickup();
-  // delay(500);
-  // move(1, Roll2);
-  // stop();
-  // pickup();
-  // delay(800);
-  // move(1, Roll3);
-  // stop();
-  // pickup();
-  // delay(1000);
-  // move(3, Roll4);
-  // stop();
-  // dropoff();
-  // delay(100000);
+  move(4, Roll1);
+  stop();
+  lower(Lower1);
+  delay(100);
+  lift(Lift1);
+  move(2, Roll2);
+  stop();
+  lower(Lower2);
+  lift(Lift2);
+  move(2, Roll3);
+  stop();
+  lower(Lower3);
+  lift(Lift3);
+  move(3, Roll4);
+  stop();
+  rotate(1, 1000);
+  stop();
+  move(4, Roll5);
+  stop();
+  turnServo(180);
+  delay(100000);
 }
