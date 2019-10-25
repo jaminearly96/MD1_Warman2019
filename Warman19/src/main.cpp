@@ -6,17 +6,18 @@
 /**********************************************************
  * Tweak these to modify timing for each movement 
  **********************************************************/
-#define Roll1 2500
-#define Roll2 1000
+#define Roll1 2600
+#define Roll2 1300
 #define Roll3 1000
 #define Roll4 2500
 #define Roll5 2500
-#define Lower1 2700
-#define Lift1 1200
-#define Lower2 1200
-#define Lift2 1200
-#define Lower3 1200
-#define Lift3 2700
+#define Lower1 2800
+#define Lift1 2100
+#define Lower2 2100
+#define Lift2 2100
+#define Lower3 2100
+#define Lift3 2800
+#define Reverse 1000
 /********************************************************/
 
 // Pin assignments for motor pins
@@ -32,12 +33,12 @@
 #define Motor4Pin1 2
 #define Motor4Pin2 1
 #define Motor4PinPWM 3
-
 #define ServoPin 14
 
-int speed = 0.5; // Assign value between 0 and 1 to modify the wheel speed
+int speed = 0.4;                    // Assign value between 0 and 1 to modify the wheel speed
+int rotatespeed = 0.4;              // Assign value between 0 and 1 to modify the rotation speed
 const int stepsPerRevolution = 200; // How many steps are in a full revolution of the stepper
-int stepperSpeed = 80; // The speed of the stepper motor in steps/second
+int stepperSpeed = 80;              // The speed of the stepper motor in steps/second
 
 // Stepper Declaration
 Stepper stepper = Stepper(stepsPerRevolution, 18, 17, 16, 15);
@@ -123,8 +124,8 @@ void rotate(int direction, int delayPeriod)
   {
   case 1:
     motor1.forward();
-    motor2.forward();
-    motor3.forward();
+    motor2.backward();
+    motor3.backward();
     motor4.forward();
     break;
   case 2:
@@ -132,14 +133,20 @@ void rotate(int direction, int delayPeriod)
     motor2.backward();
     motor3.backward();
     motor4.backward();
+    break;
   }
+  delay(delayPeriod);
+  stop();
+  delay(10);
 }
 
-void lift(int steps){
+void lift(int steps)
+{
   stepper.step(-1 * steps);
 }
 
-void lower(int steps){
+void lower(int steps)
+{
   stepper.step(steps);
 }
 
@@ -152,7 +159,8 @@ void testStepper()
   delay(2000);
 }
 
-void turnServo(int i){
+void turnServo(int i)
+{
   int val = i;
   // val = map(val, 0, 1023, 0, 180);
   servo.write(val);
@@ -163,10 +171,23 @@ void setup()
 {
   // Start serial monitor
   Serial.begin(9600);
-    turnServo(0);
-  delay(5000);
   stepper.setSpeed(stepperSpeed);
   servo.attach(ServoPin);
+  turnServo(180);
+  delay(1000);
+}
+
+void release()
+{
+  setSpeed(0.2);
+  motor1.backward();
+  motor2.stop();
+  motor3.backward();
+  motor4.stop();
+  turnServo(0);
+  delay(500);
+  stop();
+  turnServo(180);
 }
 
 void loop()
@@ -178,18 +199,26 @@ void loop()
   lift(Lift1);
   move(2, Roll2);
   stop();
+  move(4, 400);
+  stop();
   lower(Lower2);
   lift(Lift2);
   move(2, Roll3);
+  stop();
+  move(4, 400);
   stop();
   lower(Lower3);
   lift(Lift3);
   move(3, Roll4);
   stop();
-  rotate(1, 1000);
+  delay(500);
+  rotate(1, 920);
   stop();
+  delay(500);
   move(4, Roll5);
   stop();
-  turnServo(180);
-  delay(100000);
+  release();
+  while (1)
+  {
+  }
 }
